@@ -15,18 +15,27 @@
     public class AccountController : ControllerBase
     {
         private readonly IAccountService _accountService;
+        private readonly IEmailService emailService;
 
-        public AccountController(IAccountService accountService)
+        public AccountController(IAccountService accountService, IEmailService _emailService)
         {
             _accountService = accountService;
+            emailService = _emailService;
         }
 
         [HttpPost("signUp")]
         public async Task<IActionResult> SignUp([FromBody] SignUpModel signUpModel)
         {
+
             var result = await _accountService.SignUpUser(signUpModel);
+            UserEmail userEmail = new UserEmail
+            {
+                ToEmails = new List<string> { signUpModel.Email }
+            };
+
             if (result.Succeeded)
             {
+                await emailService.SendTestEmail(userEmail);
                 return Ok(result.Succeeded);
             }
             return Unauthorized();

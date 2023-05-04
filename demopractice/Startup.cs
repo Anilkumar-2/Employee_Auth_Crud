@@ -64,10 +64,12 @@ namespace demopractice
 
             
             services.AddControllers();
+            services.Configure<SMTPConfigModel>(Configuration.GetSection("SMTPConfig"));
             services.AddScoped<IEmployeeRepository, EmployeeRepository>();
             services.AddScoped<IEmployeeService, EmployeeService>();
             services.AddScoped<IAccountRepository, AccountRepository>();
             services.AddScoped<IAccountService, AccountService>();
+            services.AddScoped<IEmailService, EmailService>();
             
             services.AddCors();
         }   
